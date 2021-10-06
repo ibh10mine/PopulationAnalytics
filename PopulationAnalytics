@@ -1,0 +1,19 @@
+-- Orginal database contains '%' in each row this has to be removed as MySQL would not recognise the column values as INT
+UPDATE population_country
+SET Urban_Pop = REPLACE(Urban_Pop,'%',''),
+    World_Share = REPLACE(World_Share,'%','')
+-- Next step is to combine the table in the population database with the 'Country' table in the world_database
+-- The this method the various continental regions can be grouped
+SELECT Region,AVG(Fert_Rate),AVG(Pop_Density)
+FROM 2020_population.population_country
+JOIN world.country
+ON  population_country.Country = country.Name
+GROUP BY Region
+ORDER BY AVG(Fert_Rate) DESC
+-- Similarly the net migration BY continents can be determined using 'OUTER JOINS' with the world Database
+SELECT Continent, AVG(Migrants_net)
+FROM 2020_population.population_country
+JOIN world.country
+ON  population_country.Country = country.Name
+GROUP BY Continent
+ORDER BY AVG(Migrants_net) DESC
